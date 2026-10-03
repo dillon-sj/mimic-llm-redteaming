@@ -68,7 +68,7 @@ To rigorously benchmark the automated LLM-as-a-Judge architecture:
 * Achieved a Cohen's Kappa coefficient of **kappa = 0.75**, demonstrating substantial agreement and validating the viability of automated evaluation in enterprise red-teaming pipelines.
 
 ### 3. Engineering Rigour & CI/CD
-* Deterministic test suite with **132 automated tests (100% pass rate)**.
+* Deterministic test suite with **214 automated tests** across 24 test modules.
 * Comprehensive mock isolation for all external network API calls.
 * Automated CI/CD pipelines enforcing static analysis via `ruff` and test coverage via `pytest`.
 
