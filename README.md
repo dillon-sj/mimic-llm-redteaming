@@ -28,51 +28,22 @@ MIMIC addresses this gap by treating adversarial prompt generation as a multi-st
 
 ## System Architecture
 
-MIMIC couples an asynchronous test-orchestration engine with a 3-stage generative mutation pipeline and an automated verification layer:
+MIMIC couples an asynchronous test-orchestration engine with a multi-stage generative mutation pipeline and an automated verification layer:
 
 ```mermaid
-flowchart TD
-    subgraph Pipeline ["3-Stage Generative Semantic Mutation"]
-        A["Raw Harmful Intent\n(Seed Objective)"] --> B["Stage 1: Intent Abstraction\n(Decouple malicious keywords & syntax)"]
-        B --> C["Stage 2: Domain Scaffolding\n(Embed in benign academic / cybersecurity context)"]
-        C --> D["Stage 3: Contextual Synthesis\n(Generate syntactically coherent adversarial prompt)"]
-    end
-
-    subgraph Engine ["High-Concurrency Execution Core"]
-        D --> E["AsyncIO Concurrency Controller"]
-        E --> F["Rate-Limiting & Backoff\n(Tenacity + Semaphore Pools)"]
-        F --> G["ModelAdapter Multi-Provider Abstraction"]
-        G --> H1["Gemini"]
-        G --> H2["Groq"]
-        G --> H3["Mistral"]
-        G --> H4["OpenRouter"]
-    end
-
-    subgraph Eval ["Automated Evaluation & Validation Layer"]
-        H1 & H2 & H3 & H4 --> I["LLM-as-a-Judge Evaluation Engine\n(NIST AI RMF Multi-Metric Rubric)"]
-        I --> J["Human-in-the-Loop Verification Dashboard\n(Streamlit Analytics CLI & UI)"]
-        J --> K["Empirical Reporting & Vulnerability Surface Maps"]
-    end
+flowchart LR
+    A["Adversarial Intent Seeds"] --> B["Generative Mutation Engine\n(3-Stage Intent Scaffolding)"]
+    B --> C["AsyncIO Execution Core\n(Multi-Model Provider Adapter)"]
+    C --> D["Automated Evaluation Layer\n(LLM-as-a-Judge & NIST AI RMF)"]
+    D --> E["Vulnerability Analytics\n& Telemetry Dashboard"]
 ```
 
-### 1. 3-Stage Generative Semantic Mutation Pipeline
-* **Stage 1 -- Intent Abstraction:** Extracts the core semantic intent from the raw objective while stripping explicit harmful linguistic markers that immediately trigger deterministic pattern matchers.
-* **Stage 2 -- Domain-Stratified Scaffolding:** Re-anchors the abstracted intent into plausible, highly structured benign domains (e.g., threat modeling, historical case analysis, hypothetical academic scenarios, or dual-use research inquiries).
-* **Stage 3 -- Contextual Synthesis:** Synthesizes the scaffolded intent into a fluent, authoritative natural language prompt engineered to bypass frontier safety guardrails while preserving semantic utility for evaluation.
+### Core Architecture Highlights
 
-### 2. High-Throughput Asynchronous Orchestration Engine
-* **AsyncIO Core:** Engineered for high-concurrency evaluation across thousands of automated API requests without thread-locking or latency bottlenecks.
-* **Deterministic Semaphore Pools & Adaptive Backoff:** Integrated with Tenacity exponential backoff and jitter algorithms to safely handle API rate limits (HTTP 429) under load.
-* **Modular ModelAdapter Interface:** Hot-swappable provider layer allowing seamless evaluation against multiple frontier backends:
-  * Google Gemini (gemini-1.5-pro, gemini-1.5-flash)
-  * Groq (Llama-3, Mixtral-8x7b)
-  * Mistral AI (mistral-large, codestral)
-  * OpenRouter unified endpoint gateway
-
-### 3. Automated LLM-as-a-Judge Evaluation Layer
-* Employs calibrated judge models evaluated against strict multi-criteria rubrics.
-* Evaluates both **Violation Severity** and **Actionability of Response** rather than relying on superficial refusal strings.
-* Validated against expert human ground truth to prevent judge hallucination.
+* **Generative Mutation Engine:** Decouples core semantic intent from surface lexical triggers, evaluating model guardrails against contextually scaffolded inputs rather than static prompt injections.
+* **High-Throughput Asynchronous Core:** Engineered with Python `AsyncIO` and Tenacity exponential backoff, executing thousands of automated concurrent evaluations without latency bottlenecks or rate-limit failures.
+* **Unified ModelAdapter Abstraction:** Implements a hot-swappable provider interface supporting seamless evaluation across commercial and open-weights endpoints (Google Gemini, Groq, Mistral AI, OpenRouter).
+* **Calibrated Automated Verification:** Combines an automated LLM-as-a-Judge scoring engine with human-in-the-loop validation dashboards, measuring violation severity and response actionability under NIST AI RMF standards.
 
 ---
 
